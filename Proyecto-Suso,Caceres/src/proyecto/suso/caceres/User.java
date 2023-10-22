@@ -10,5 +10,13 @@ package proyecto.suso.caceres;
  * @author Contingencia
  */
 public class User {
+    String name;
+   Lista<User> friends;
+   
+   public User(String name) {
+        this.name = name;
+        this.friends = new Lista<>();
+    }
+    
     
 }
