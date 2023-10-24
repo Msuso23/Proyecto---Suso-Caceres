@@ -20,8 +20,35 @@ public class Interfaz extends javax.swing.JFrame {
         initComponents();
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files","txt");
         fileChooser.setFileFilter(filter);
+        newUserError.setVisible(false);
+        loadFile("src/data.txt");
     }
-
+    
+    private void loadFile(String filename){
+        Lista list = new Lista ();
+        grafo = new Grafo(list);
+        System.out.println(filename);
+        try {
+            File in = new File(filename);
+            Scanner lector = new Scanner(in);
+            String linea = lector.nextLine();
+            if (linea.equals("usuarios")){
+                linea = lector.nextLine();
+                while (!linea.equals("relaciones") ) { 
+                    grafo.addUser(linea);
+                    linea = lector.nextLine();
+                }
+                while (lector.hasNextLine()) {
+                    linea = lector.nextLine();
+                    String[] relacion = linea.split(", ");
+                    grafo.addFriend(relacion[0], relacion[1]);
+                }
+            }
+            lector.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("Archivo Inválido");
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -33,6 +60,14 @@ public class Interfaz extends javax.swing.JFrame {
 
         fileChooser = new javax.swing.JFileChooser();
         load = new javax.swing.JButton();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        nameNewUser = new javax.swing.JTextField();
+        agregar = new javax.swing.JToggleButton();
+        eliminar = new javax.swing.JButton();
+        save = new javax.swing.JButton();
+        newUserError = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -43,21 +78,94 @@ public class Interfaz extends javax.swing.JFrame {
             }
         });
 
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel1.setText("Eliminar Usuarios");
+
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel2.setText("Agregar Usuario");
+
+        nameNewUser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nameNewUserActionPerformed(evt);
+            }
+        });
+
+        agregar.setText("Agregar");
+        agregar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                agregarActionPerformed(evt);
+            }
+        });
+
+        eliminar.setText("Eliminar");
+        eliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                eliminarActionPerformed(evt);
+            }
+        });
+
+        save.setText("Guardar Usuarios");
+
+        newUserError.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
+        newUserError.setForeground(new java.awt.Color(255, 0, 0));
+        newUserError.setText("Este usuario ya existe");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(43, 43, 43)
-                .addComponent(load)
-                .addContainerGap(244, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(30, 30, 30)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel2)
+                                            .addComponent(newUserError))
+                                        .addGap(132, 132, 132))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(nameNewUser, javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addGap(18, 18, 18)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(agregar)
+                                    .addComponent(eliminar)))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(48, 48, 48)
+                        .addComponent(load)
+                        .addGap(65, 65, 65)
+                        .addComponent(save)))
+                .addGap(38, 38, 38))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(53, 53, 53)
-                .addComponent(load)
-                .addContainerGap(224, Short.MAX_VALUE))
+                .addGap(25, 25, 25)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(load)
+                    .addComponent(save))
+                .addGap(28, 28, 28)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nameNewUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(agregar))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(newUserError, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(eliminar))
+                .addContainerGap(98, Short.MAX_VALUE))
         );
 
         pack();
@@ -66,31 +174,30 @@ public class Interfaz extends javax.swing.JFrame {
     private void loadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadActionPerformed
         if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             String filename = fileChooser.getSelectedFile().getAbsolutePath();
-            Lista list = new Lista ();
-            grafo = new Grafo(list);
-            
-            try {
-                File in = new File(filename);
-                Scanner lector = new Scanner(in);
-                String linea = lector.nextLine();
-                if (linea.equals("usuarios")){
-                    linea = lector.nextLine();
-                    while (!linea.equals("relaciones") ) { 
-                        grafo.addUser(linea);
-                        linea = lector.nextLine();
-                    }
-                    while (lector.hasNextLine()) {
-                        linea = lector.nextLine();
-                        String[] relacion = linea.split(", ");
-                        grafo.addFriend(relacion[0], relacion[1]);
-                    }
-                }
-                lector.close();
-            } catch (FileNotFoundException e) {
-                System.out.println("Archivo Inválido");
-            }
+            loadFile(filename);
         }
     }//GEN-LAST:event_loadActionPerformed
+
+    private void nameNewUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameNewUserActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_nameNewUserActionPerformed
+
+    private void agregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarActionPerformed
+        String newUser = nameNewUser.getText();
+        nameNewUser.setText("");
+        boolean added = grafo.addUser(newUser);
+        if(added){
+            newUserError.setVisible(false);
+        }
+        else{
+            newUserError.setVisible(true);
+        }
+        
+    }//GEN-LAST:event_agregarActionPerformed
+
+    private void eliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_eliminarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -121,34 +228,6 @@ public class Interfaz extends javax.swing.JFrame {
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -159,7 +238,15 @@ public class Interfaz extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JToggleButton agregar;
+    private javax.swing.JButton eliminar;
     private javax.swing.JFileChooser fileChooser;
+    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JButton load;
+    private javax.swing.JTextField nameNewUser;
+    private javax.swing.JLabel newUserError;
+    private javax.swing.JButton save;
     // End of variables declaration//GEN-END:variables
 }
