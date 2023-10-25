@@ -22,6 +22,7 @@ public class Interfaz extends javax.swing.JFrame {
         fileChooser.setFileFilter(filter);
         newUserError.setVisible(false);
         loadFile("src/data.txt");
+        updateUsers();
     }
     
     private void loadFile(String filename){
@@ -49,6 +50,17 @@ public class Interfaz extends javax.swing.JFrame {
             System.out.println("Archivo Inválido");
         }
     }
+    
+    private void updateUsers(){
+        Nodo<User> aux = grafo.getUsers().getpFirst();
+        while(aux != null){
+            String name = aux.getData().getName();
+            userList.addItem(name);
+            //relacionLista1.addItem(etiqueta);
+            //relacionLista2.addItem(etiqueta);
+            aux = aux.getpNext();
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -60,7 +72,7 @@ public class Interfaz extends javax.swing.JFrame {
 
         fileChooser = new javax.swing.JFileChooser();
         load = new javax.swing.JButton();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        userList = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         nameNewUser = new javax.swing.JTextField();
@@ -77,8 +89,6 @@ public class Interfaz extends javax.swing.JFrame {
                 loadActionPerformed(evt);
             }
         });
-
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel1.setText("Eliminar Usuarios");
@@ -132,7 +142,7 @@ public class Interfaz extends javax.swing.JFrame {
                                     .addGroup(layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                             .addComponent(nameNewUser, javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                            .addComponent(userList, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                         .addGap(18, 18, 18)))
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(agregar)
@@ -163,7 +173,7 @@ public class Interfaz extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(userList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(eliminar))
                 .addContainerGap(98, Short.MAX_VALUE))
         );
@@ -184,19 +194,20 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void agregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarActionPerformed
         String newUser = nameNewUser.getText();
-        nameNewUser.setText("");
         boolean added = grafo.addUser(newUser);
+        nameNewUser.setText("");
+        newUserError.setVisible(!added);
         if(added){
-            newUserError.setVisible(false);
-        }
-        else{
-            newUserError.setVisible(true);
-        }
-        
+            updateUsers();
+        }       
     }//GEN-LAST:event_agregarActionPerformed
 
     private void eliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarActionPerformed
-        // TODO add your handling code here:
+        String user = String.valueOf(userList.getSelectedItem());
+        boolean removed = grafo.EliminarUser(user);
+        if(removed){
+            userList.removeItem(user);
+        }
     }//GEN-LAST:event_eliminarActionPerformed
 
     /**
@@ -241,12 +252,12 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JToggleButton agregar;
     private javax.swing.JButton eliminar;
     private javax.swing.JFileChooser fileChooser;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JButton load;
     private javax.swing.JTextField nameNewUser;
     private javax.swing.JLabel newUserError;
     private javax.swing.JButton save;
+    private javax.swing.JComboBox<String> userList;
     // End of variables declaration//GEN-END:variables
 }
