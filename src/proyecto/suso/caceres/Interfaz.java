@@ -21,14 +21,14 @@ public class Interfaz extends javax.swing.JFrame {
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files","txt");
         fileChooser.setFileFilter(filter);
         newUserError.setVisible(false);
+        newRelationError.setVisible(false);
         loadFile("src/data.txt");
         updateUsers();
     }
     
     private void loadFile(String filename){
-        Lista list = new Lista ();
-        grafo = new Grafo(list);
-        System.out.println(filename);
+        Lista lista = new Lista<>();
+        grafo = new Grafo(lista);
         try {
             File in = new File(filename);
             Scanner lector = new Scanner(in);
@@ -56,8 +56,8 @@ public class Interfaz extends javax.swing.JFrame {
         while(aux != null){
             String name = aux.getData().getName();
             userList.addItem(name);
-            //relacionLista1.addItem(etiqueta);
-            //relacionLista2.addItem(etiqueta);
+            userList1.addItem(name);
+            userList2.addItem(name);
             aux = aux.getpNext();
         }
     }
@@ -80,10 +80,16 @@ public class Interfaz extends javax.swing.JFrame {
         eliminar = new javax.swing.JButton();
         save = new javax.swing.JButton();
         newUserError = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        agregar1 = new javax.swing.JToggleButton();
+        userList1 = new javax.swing.JComboBox<>();
+        userList2 = new javax.swing.JComboBox<>();
+        newRelationError = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        load.setText("Cargar Usuarios");
+        load.setText("Cargar Archivo");
         load.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 loadActionPerformed(evt);
@@ -116,52 +122,87 @@ public class Interfaz extends javax.swing.JFrame {
             }
         });
 
-        save.setText("Guardar Usuarios");
+        save.setText("Actualizar Repositorio");
 
         newUserError.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         newUserError.setForeground(new java.awt.Color(255, 0, 0));
         newUserError.setText("Este usuario ya existe");
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel3.setText("Archivos");
+
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel4.setText("Agregar Relación");
+
+        agregar1.setText("Agregar");
+        agregar1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                agregar1ActionPerformed(evt);
+            }
+        });
+
+        userList2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                userList2ActionPerformed(evt);
+            }
+        });
+
+        newRelationError.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
+        newRelationError.setForeground(new java.awt.Color(255, 0, 0));
+        newRelationError.setText("Esta relacion ya existe");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(30, 30, 30)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(30, 30, 30)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(38, 38, 38)
+                                .addComponent(load)
+                                .addGap(29, 29, 29)
+                                .addComponent(save))
+                            .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel2)
-                                            .addComponent(newUserError))
-                                        .addGap(132, 132, 132))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addComponent(nameNewUser, javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(userList, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                        .addGap(18, 18, 18)))
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(agregar)
-                                    .addComponent(eliminar)))))
+                                    .addComponent(jLabel3)
+                                    .addComponent(jLabel1))
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(38, 38, 38))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(48, 48, 48)
-                        .addComponent(load)
-                        .addGap(65, 65, 65)
-                        .addComponent(save)))
-                .addGap(38, 38, 38))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(userList1, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(userList2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(nameNewUser, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(userList, 0, 329, Short.MAX_VALUE))
+                            .addComponent(jLabel2)
+                            .addComponent(newUserError)
+                            .addComponent(jLabel4)
+                            .addComponent(newRelationError))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(8, 8, 8)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(agregar1)
+                                    .addComponent(eliminar)))
+                            .addComponent(agregar, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(25, 25, 25)
+                .addGap(13, 13, 13)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(load)
                     .addComponent(save))
-                .addGap(28, 28, 28)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -169,13 +210,22 @@ public class Interfaz extends javax.swing.JFrame {
                     .addComponent(agregar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(newUserError, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(15, 15, 15)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(userList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(eliminar))
-                .addContainerGap(98, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(agregar1)
+                    .addComponent(userList1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(userList2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(newRelationError, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(39, Short.MAX_VALUE))
         );
 
         pack();
@@ -196,10 +246,13 @@ public class Interfaz extends javax.swing.JFrame {
         String newUser = nameNewUser.getText();
         boolean added = grafo.addUser(newUser);
         nameNewUser.setText("");
-        newUserError.setVisible(!added);
+        
         if(added){
+            newUserError.setVisible(false);
             updateUsers();
-        }       
+        }else {
+            newUserError.setVisible(true);
+        }
     }//GEN-LAST:event_agregarActionPerformed
 
     private void eliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarActionPerformed
@@ -209,6 +262,27 @@ public class Interfaz extends javax.swing.JFrame {
             userList.removeItem(user);
         }
     }//GEN-LAST:event_eliminarActionPerformed
+
+    private void agregar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregar1ActionPerformed
+        String user1 = String.valueOf(userList1.getSelectedItem());
+        String user2 = String.valueOf(userList2.getSelectedItem());
+        if(user1.equals(user2)){
+            newRelationError.setText("Un usuario no puede ser su propio amigo");
+            newRelationError.setVisible(true);
+            return;
+        }
+        boolean added = grafo.addFriend(user1, user2);
+        if(added){
+            newRelationError.setVisible(false);
+        } else{
+            newRelationError.setText("Esta relación ya existe");
+            newRelationError.setVisible(true);
+        }      
+    }//GEN-LAST:event_agregar1ActionPerformed
+
+    private void userList2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userList2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_userList2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -250,14 +324,20 @@ public class Interfaz extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToggleButton agregar;
+    private javax.swing.JToggleButton agregar1;
     private javax.swing.JButton eliminar;
     private javax.swing.JFileChooser fileChooser;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JButton load;
     private javax.swing.JTextField nameNewUser;
+    private javax.swing.JLabel newRelationError;
     private javax.swing.JLabel newUserError;
     private javax.swing.JButton save;
     private javax.swing.JComboBox<String> userList;
+    private javax.swing.JComboBox<String> userList1;
+    private javax.swing.JComboBox<String> userList2;
     // End of variables declaration//GEN-END:variables
 }
