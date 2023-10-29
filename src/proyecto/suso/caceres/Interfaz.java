@@ -37,6 +37,7 @@ public class Interfaz extends javax.swing.JFrame {
         fileChooser.setFileFilter(filter);
         newUserError.setVisible(false);
         newRelationError.setVisible(false);
+
         loadFile("src/Txt/data.txt");
         updateUsers();
     }
@@ -220,6 +221,7 @@ public class Interfaz extends javax.swing.JFrame {
                 .addContainerGap(15, Short.MAX_VALUE))
         );
 
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         load.setText("Cargar Archivo");
@@ -262,6 +264,7 @@ public class Interfaz extends javax.swing.JFrame {
             }
         });
 
+
         newUserError.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         newUserError.setForeground(new java.awt.Color(255, 0, 0));
         newUserError.setText("Este usuario ya existe");
@@ -271,6 +274,7 @@ public class Interfaz extends javax.swing.JFrame {
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel4.setText("Grafo");
+
 
         agregar1.setText("Agregar");
         agregar1.addActionListener(new java.awt.event.ActionListener() {
@@ -382,6 +386,7 @@ public class Interfaz extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton3)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+
         );
 
         pack();
@@ -420,13 +425,13 @@ public class Interfaz extends javax.swing.JFrame {
         if(added){
             newUserError.setVisible(false);
             updateUsers();
+
            
             Node n =  grafoDibujo.addNode(newUser);
             n.setAttribute("ui.label", newUser);
             n.setAttribute("xy", 0, 0);
             n.setAttribute("xy", 1, 1);
             colorGrafo();
-            
         }else {
             newUserError.setVisible(true);
         }
@@ -457,6 +462,7 @@ public class Interfaz extends javax.swing.JFrame {
             newRelationError.setVisible(false);
             grafoDibujo.addEdge(user1+user2, user1, user2, true);
             colorGrafo();
+
         } else{
             newRelationError.setText("Esta relación ya existe");
             newRelationError.setVisible(true);
@@ -490,6 +496,7 @@ public class Interfaz extends javax.swing.JFrame {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         initGraph();
     }//GEN-LAST:event_jButton3ActionPerformed
+
 
     /**
      * @param args the command line arguments
