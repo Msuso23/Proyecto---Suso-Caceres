@@ -37,7 +37,7 @@ public class Lista <T> {
         setSize(getSize() + 1);
     }
 
-    public T getElement(int index){
+    public T get(int index){
         if(getpFirst() == null)
             return null;
         if(index == 0)

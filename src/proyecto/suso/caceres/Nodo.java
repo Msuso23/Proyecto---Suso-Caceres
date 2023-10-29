@@ -8,9 +8,8 @@ package proyecto.suso.caceres;
 /**
  *
  * @author Contingencia
- * @param <T>
  */
-public class Nodo <T> {
+public class Nodo<T> {
     private T data;
     private Nodo<T> pNext;
 
@@ -46,5 +45,6 @@ public class Nodo <T> {
     public void setpNext(Nodo<T> pNext) {
         this.pNext = pNext;
     }
+    
     
 }

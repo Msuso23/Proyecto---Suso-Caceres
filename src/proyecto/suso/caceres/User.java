@@ -12,11 +12,14 @@ package proyecto.suso.caceres;
 public class User {
    private String name;
    private Lista<User> friends;
-   
-   public User(String name) {
+
+    public User(String name) {
         this.name = name;
         this.friends = new Lista<>();
     }
+
+   
+   
 
     /**
      * @return the name
@@ -45,6 +48,7 @@ public class User {
     public void setFriends(Lista<User> friends) {
         this.friends = friends;
     }
-    
-    
+
+   
+   
 }

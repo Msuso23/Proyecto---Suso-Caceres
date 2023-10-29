@@ -11,6 +11,11 @@ import java.io.IOException;
  *
  * @author Contingencia
  */
+
+/**
+* Representa un grafo dirigido, en este caso la red social
+*/
+
 public class Grafo {
     private Lista<User> users;
 
@@ -74,7 +79,7 @@ public class Grafo {
 
         // Busca los nodos origen y destino
         for (int i=0; i< getUsers().getSize(); i++) {
-            User aux = getUsers().getElement(i);
+            User aux = getUsers().get(i);
             if (aux.getName().equals(source)) {
                 origenUser = aux;
             }
@@ -134,11 +139,11 @@ public class Grafo {
     // Crea el DFS y añade los nodos a la lista
     void DFS(int v, boolean[] visited, Lista<Integer> stack) {
         visited[v] = true;
-        User aux = getUsers().getElement(v);
+        User aux = getUsers().get(v);
         
         int n = aux.getFriends().getSize();
         for(int j = 0; j < n; j++){
-            String friend = aux.getFriends().getElement(j).getName();
+            String friend = aux.getFriends().get(j).getName();
             int friendIndex = getIndex(friend);
             
             if (!visited[friendIndex])
@@ -152,11 +157,11 @@ public class Grafo {
 
     private String DFSTranpose(Lista<User> grafoTranspuesto, int v, boolean[] visited) {
         visited[v] = true;
-        User aux = grafoTranspuesto.getElement(v);
+        User aux = grafoTranspuesto.get(v);
         
         int n = aux.getFriends().getSize();
         for(int j = 0; j < n; j++){
-            String friend = aux.getFriends().getElement(j).getName();
+            String friend = aux.getFriends().get(j).getName();
             int friendIndex = getIndex(friend);
             
             if (!visited[friendIndex])
@@ -209,7 +214,7 @@ public class Grafo {
         
         // Crea el DFS del grafo transpuesto
         while (n  > 0) {
-            int v = stack.getElement(n-1);
+            int v = stack.get(n-1);
             if (!visited[v]) {
                 String scc = DFSTranpose(grafoTranspuesto, v, visited);
                 components += scc + "\n";
