@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package proyecto.suso.caceres;
+package proyecto1;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,22 +10,37 @@ import java.util.Scanner;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.graphstream.graph.*;
+import org.graphstream.graph.implementations.*;
+import org.graphstream.ui.view.*;
+import org.graphstream.graph.Node;
+        
 public class Interfaz extends javax.swing.JFrame {
     
+    
+    
     Grafo grafo;
+    Graph grafoDibujo;
+    
+
+    
     /**
      * Creates new form Interface
      */
     public Interfaz() {
         initComponents();
+        this.setLocationRelativeTo(null);
+        this.setResizable(false);
+        
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files","txt");
         fileChooser.setFileFilter(filter);
         newUserError.setVisible(false);
         newRelationError.setVisible(false);
-        loadFile("src/data.txt");
+        loadFile("src/Txt/data.txt");
         updateUsers();
     }
     
+    // Load nodes and relatioships from file
     private void loadFile(String filename){
         Lista lista = new Lista<>();
         grafo = new Grafo(lista);
@@ -47,10 +62,68 @@ public class Interfaz extends javax.swing.JFrame {
             }
             lector.close();
         } catch (FileNotFoundException e) {
-            System.out.println("Archivo Inválido");
+            System.out.println("Archivo Invalido");
         }
     }
     
+    // Color the graph given its strong connected components
+    private void colorGrafo(){
+        String[] componentes = grafo.findSCC().split("\n");
+        int n = componentes.length;
+        
+        // Generate and print equally spaced numbers
+        int interval = 255 / (n - 1);
+        for (int i = 0; i < n; i++) {
+            int num = i * interval;
+            
+            String nodes[] = componentes[i].split(" ");
+            int m = nodes.length;
+            for(int j=0; j < m; j++){
+                int indexNode = Integer.parseInt(nodes[j]);
+                String name = grafo.getUsers().get(indexNode).getName();
+                Node node = grafoDibujo.getNode(name);
+                node.setAttribute("ui.style", 
+                    "fill-color: rgb(0," + Integer.toString(num) + "," + Integer.toString(num) + ");");
+            }
+        }
+    }
+    
+    // Make a new window with the graph
+    private void initGraph(){
+        System.setProperty("org.graphstream.ui", "swing");
+        
+        grafoDibujo = new SingleGraph("Red Social");
+        grafoDibujo.setAttribute("ui.stylesheet", "node{ fill-color: black; size:30; text-background-mode: plain;}");
+        grafoDibujo.setAttribute("ui.antialias");
+        
+        Nodo<User> aux = grafo.getUsers().getpFirst();
+        while (aux != null) {
+            Node n = grafoDibujo.addNode(aux.getData().getName());
+            n.setAttribute("ui.label", aux.getData().getName());
+            
+            n.setAttribute("xy", 0, 0);
+            n.setAttribute("xy", 1, 1);
+
+            aux = aux.getpNext();
+        }
+
+        aux = grafo.getUsers().getpFirst();
+        while (aux != null) {
+            Nodo<User> friend = aux.getData().getFriends().getpFirst();
+            while(friend != null){
+                grafoDibujo.addEdge(aux.getData().getName()+friend.getData().getName(), aux.getData().getName(), friend.getData().getName(), true);
+                friend = friend.getpNext();
+            }
+            aux = aux.getpNext();
+        }
+        
+        Viewer viewer = grafoDibujo.display();
+        viewer.setCloseFramePolicy(Viewer.CloseFramePolicy.HIDE_ONLY);
+        
+        colorGrafo();
+    }
+    
+    // Update the dropdowns with all the users
     private void updateUsers(){
         Nodo<User> aux = grafo.getUsers().getpFirst();
         while(aux != null){
@@ -71,6 +144,11 @@ public class Interfaz extends javax.swing.JFrame {
     private void initComponents() {
 
         fileChooser = new javax.swing.JFileChooser();
+        dialogSave = new javax.swing.JDialog();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jButton2 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
         load = new javax.swing.JButton();
         userList = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
@@ -86,6 +164,60 @@ public class Interfaz extends javax.swing.JFrame {
         userList1 = new javax.swing.JComboBox<>();
         userList2 = new javax.swing.JComboBox<>();
         newRelationError = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jButton3 = new javax.swing.JButton();
+
+        jLabel6.setText("Recuerde guardar los datos del grafo anterior !");
+
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel7.setText("IMPORTANTE");
+
+        jButton2.setText("Continuar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jButton1.setText("Cerrar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout dialogSaveLayout = new javax.swing.GroupLayout(dialogSave.getContentPane());
+        dialogSave.getContentPane().setLayout(dialogSaveLayout);
+        dialogSaveLayout.setHorizontalGroup(
+            dialogSaveLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(dialogSaveLayout.createSequentialGroup()
+                .addGroup(dialogSaveLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(dialogSaveLayout.createSequentialGroup()
+                        .addGap(101, 101, 101)
+                        .addComponent(jLabel7))
+                    .addGroup(dialogSaveLayout.createSequentialGroup()
+                        .addGap(17, 17, 17)
+                        .addGroup(dialogSaveLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(dialogSaveLayout.createSequentialGroup()
+                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButton2))
+                            .addComponent(jLabel6))))
+                .addContainerGap(18, Short.MAX_VALUE))
+        );
+        dialogSaveLayout.setVerticalGroup(
+            dialogSaveLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(dialogSaveLayout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(dialogSaveLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton2)
+                    .addComponent(jButton1))
+                .addContainerGap(15, Short.MAX_VALUE))
+        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -123,6 +255,11 @@ public class Interfaz extends javax.swing.JFrame {
         });
 
         save.setText("Actualizar Repositorio");
+        save.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveActionPerformed(evt);
+            }
+        });
 
         newUserError.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         newUserError.setForeground(new java.awt.Color(255, 0, 0));
@@ -132,7 +269,7 @@ public class Interfaz extends javax.swing.JFrame {
         jLabel3.setText("Archivos");
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel4.setText("Agregar Relación");
+        jLabel4.setText("Grafo");
 
         agregar1.setText("Agregar");
         agregar1.addActionListener(new java.awt.event.ActionListener() {
@@ -151,6 +288,16 @@ public class Interfaz extends javax.swing.JFrame {
         newRelationError.setForeground(new java.awt.Color(255, 0, 0));
         newRelationError.setText("Esta relacion ya existe");
 
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel5.setText("Agregar Relación");
+
+        jButton3.setText("Ver Grafo");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -160,17 +307,14 @@ public class Interfaz extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(38, 38, 38)
-                                .addComponent(load)
-                                .addGap(29, 29, 29)
-                                .addComponent(save))
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel3)
-                                    .addComponent(jLabel1))
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addGap(38, 38, 38))
+                                .addGap(48, 48, 48)
+                                .addComponent(load)
+                                .addGap(43, 43, 43)
+                                .addComponent(save))
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel1))
+                        .addGap(38, 71, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -191,7 +335,14 @@ public class Interfaz extends javax.swing.JFrame {
                                     .addComponent(agregar1)
                                     .addComponent(eliminar)))
                             .addComponent(agregar, javax.swing.GroupLayout.Alignment.TRAILING))
-                        .addContainerGap())))
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addGap(0, 299, Short.MAX_VALUE))))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(157, 157, 157)
+                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -216,26 +367,39 @@ public class Interfaz extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(userList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(eliminar))
-                .addGap(18, 18, 18)
-                .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(12, 12, 12)
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(agregar1)
                     .addComponent(userList1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(userList2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(newRelationError, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(39, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton3)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void loadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadActionPerformed
-        if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-            String filename = fileChooser.getSelectedFile().getAbsolutePath();
-            loadFile(filename);
+        if(grafo != null){
+            dialogSave.pack();
+            dialogSave.setLocationRelativeTo(null);
+            dialogSave.setResizable(false);
+            dialogSave.setVisible(true);
+        } else {
+            if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                String filename = fileChooser.getSelectedFile().getAbsolutePath();
+                loadFile(filename);
+                updateUsers();
+            }
         }
+        
     }//GEN-LAST:event_loadActionPerformed
 
     private void nameNewUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameNewUserActionPerformed
@@ -244,12 +408,24 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void agregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarActionPerformed
         String newUser = nameNewUser.getText();
+        if (!newUser.startsWith("@")) {
+            // If not, add "@" at the beginning
+            newUser = "@" + newUser;
+        }
+       
         boolean added = grafo.addUser(newUser);
         nameNewUser.setText("");
         
         if(added){
             newUserError.setVisible(false);
             updateUsers();
+           
+            Node n =  grafoDibujo.addNode(newUser);
+            n.setAttribute("ui.label", newUser);
+            n.setAttribute("xy", 0, 0);
+            n.setAttribute("xy", 1, 1);
+            colorGrafo();
+            
         }else {
             newUserError.setVisible(true);
         }
@@ -260,6 +436,10 @@ public class Interfaz extends javax.swing.JFrame {
         boolean removed = grafo.EliminarUser(user);
         if(removed){
             userList.removeItem(user);
+            userList1.removeItem(user);
+            userList2.removeItem(user);
+            grafoDibujo.removeNode(user);
+            colorGrafo();
         }
     }//GEN-LAST:event_eliminarActionPerformed
 
@@ -274,6 +454,8 @@ public class Interfaz extends javax.swing.JFrame {
         boolean added = grafo.addFriend(user1, user2);
         if(added){
             newRelationError.setVisible(false);
+            grafoDibujo.addEdge(user1+user2, user1, user2, true);
+            colorGrafo();
         } else{
             newRelationError.setText("Esta relación ya existe");
             newRelationError.setVisible(true);
@@ -283,6 +465,30 @@ public class Interfaz extends javax.swing.JFrame {
     private void userList2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userList2ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_userList2ActionPerformed
+
+    private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
+        if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            String filename = fileChooser.getSelectedFile().getAbsolutePath();
+            grafo.GuardarArchivo(filename);
+        }
+    }//GEN-LAST:event_saveActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        dialogSave.setVisible(false);
+        if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            String filename = fileChooser.getSelectedFile().getAbsolutePath();
+            loadFile(filename);
+            updateUsers();
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        dialogSave.setVisible(false);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        initGraph();
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -311,20 +517,6 @@ public class Interfaz extends javax.swing.JFrame {
         }
         //</editor-fold>
         //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -337,12 +529,19 @@ public class Interfaz extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToggleButton agregar;
     private javax.swing.JToggleButton agregar1;
+    private javax.swing.JDialog dialogSave;
     private javax.swing.JButton eliminar;
     private javax.swing.JFileChooser fileChooser;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JButton load;
     private javax.swing.JTextField nameNewUser;
     private javax.swing.JLabel newRelationError;
